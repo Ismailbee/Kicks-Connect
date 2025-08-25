@@ -3,15 +3,23 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'firebase_options.dart';
 import 'routes.dart';
 import 'theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Firebase init is optional in dev; guarded to not crash on web w/o config
+  
+  // Initialize Firebase with proper configuration
   try {
-    await Firebase.initializeApp();
-  } catch (_) {}
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    // Firebase initialization failed - app will work in offline mode
+    debugPrint('Firebase initialization failed: $e');
+  }
+  
   runApp(const ProviderScope(child: KicksConnectApp()));
 }
 
